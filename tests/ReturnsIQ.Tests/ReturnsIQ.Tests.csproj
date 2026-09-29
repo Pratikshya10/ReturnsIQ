@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ReturnsIQ.Core\ReturnsIQ.Core.csproj" />
+    <ProjectReference Include="..\..\src\ReturnsIQ.Data\ReturnsIQ.Data.csproj" />
+    <ProjectReference Include="..\..\src\ReturnsIQ.Security\ReturnsIQ.Security.csproj" />
+    <ProjectReference Include="..\..\src\ReturnsIQ.Analysis\ReturnsIQ.Analysis.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

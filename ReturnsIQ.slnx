@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ReturnsIQ.Agent/ReturnsIQ.Agent.csproj" />
+    <Project Path="src/ReturnsIQ.Analysis/ReturnsIQ.Analysis.csproj" />
+    <Project Path="src/ReturnsIQ.Core/ReturnsIQ.Core.csproj" />
+    <Project Path="src/ReturnsIQ.Data/ReturnsIQ.Data.csproj" />
+    <Project Path="src/ReturnsIQ.McpServer/ReturnsIQ.McpServer.csproj" />
+    <Project Path="src/ReturnsIQ.Security/ReturnsIQ.Security.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ReturnsIQ.Tests/ReturnsIQ.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReturnsIQ.Core\ReturnsIQ.Core.csproj" />
+    <ProjectReference Include="..\ReturnsIQ.Analysis\ReturnsIQ.Analysis.csproj" />
+    <ProjectReference Include="..\ReturnsIQ.Security\ReturnsIQ.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
