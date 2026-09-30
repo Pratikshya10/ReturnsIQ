@@ -14,7 +14,12 @@ public class DataTests
         var repo = new ReturnRepository(db);
         var returns = repo.ListReturns("SKU-123", DateTime.MinValue, DateTime.MaxValue);
 
-        Assert.NotEmpty(returns);
+        //Assert.NotEmpty(returns);
+        //Assert.NotNull(repo.GetOrder(1001));
+
+        var from = new DateTime(2026, 9, 22, 0, 0, 0, DateTimeKind.Utc);
+        var to = new DateTime(2026, 9, 30, 0, 0, 0, DateTimeKind.Utc);
+        Assert.Equal(22, repo.ListReturns("SKU-123", from, to).Count);
         Assert.NotNull(repo.GetOrder(1001));
     }
 

@@ -55,4 +55,62 @@ public class ReturnRepository(Database db)
         while (r.Read()) d[r.GetString(0)] = r.GetInt32(1);
         return d;
     }
+
+    public List<OrderItem> GetOrderItems(int orderId)
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT OrderId, Sku, Quantity FROM OrderItems WHERE OrderId=$id";
+        cmd.Parameters.AddWithValue("$id", orderId);
+        var list = new List<OrderItem>();
+        using var r = cmd.ExecuteReader();
+        while (r.Read()) list.Add(new OrderItem(r.GetInt32(0), r.GetString(1), r.GetInt32(2)));
+        return list;
+    }
+
+    public ReturnRequest? GetReturn(int returnId)
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT ReturnId, OrderId, Sku, Reason, CreatedAt, Status FROM Returns WHERE ReturnId=$id";
+        cmd.Parameters.AddWithValue("$id", returnId);
+        using var r = cmd.ExecuteReader();
+        return r.Read()
+            ? new ReturnRequest(r.GetInt32(0), r.GetInt32(1), r.GetString(2),
+                r.GetString(3), DateTime.Parse(r.GetString(4)), r.GetString(5))
+            : null;
+    }
+
+    public bool HasPendingFlag(int returnId)
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT COUNT(*) FROM ReviewFlags WHERE ReturnId=$id AND Status='PendingApproval'";
+        cmd.Parameters.AddWithValue("$id", returnId);
+        return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+    }
+
+    public int CountPendingFlags()
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT COUNT(*) FROM ReviewFlags WHERE Status='PendingApproval'";
+        return Convert.ToInt32(cmd.ExecuteScalar());
+    }
+
+    public int AddReviewFlag(int returnId, string reason)
+    {
+        using var conn = db.Open();
+        using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = "INSERT INTO ReviewFlags (ReturnId, Reason, Status, CreatedAt) VALUES ($r,$reason,'PendingApproval',$at)";
+            cmd.Parameters.AddWithValue("$r", returnId);
+            cmd.Parameters.AddWithValue("$reason", reason);
+            cmd.Parameters.AddWithValue("$at", DateTime.UtcNow.ToString("o"));
+            cmd.ExecuteNonQuery();
+        }
+        using var idCmd = conn.CreateCommand();
+        idCmd.CommandText = "SELECT last_insert_rowid()";
+        return Convert.ToInt32(idCmd.ExecuteScalar());
+    }
 }
