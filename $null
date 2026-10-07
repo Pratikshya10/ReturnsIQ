@@ -1,0 +1,16 @@
+[40m[32minfo[39m[22m[49m: ModelContextProtocol.Server.StdioServerTransport[857250842]
+      Server (stream) (ReturnsIQ.McpServer) transport reading messages.
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Content root path: G:\Claude Code Project\ReturnsIQ
+[40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+[40m[32minfo[39m[22m[49m: ModelContextProtocol.Server.StdioServerTransport[1221292038]
+      Server (stream) (ReturnsIQ.McpServer) transport completed reading messages.
+[40m[32minfo[39m[22m[49m: ModelContextProtocol.Server.StdioServerTransport[1375634372]
+      Server (stream) (ReturnsIQ.McpServer) shutting down.
+[40m[32minfo[39m[22m[49m: ModelContextProtocol.Server.StdioServerTransport[1256455528]
+      Server (stream) (ReturnsIQ.McpServer) shut down.
