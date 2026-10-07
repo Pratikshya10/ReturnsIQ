@@ -44,6 +44,11 @@ public class Database(string dbPath)
                 FlagId INTEGER PRIMARY KEY AUTOINCREMENT, ReturnId INTEGER NOT NULL,
                 Reason TEXT NOT NULL, Status TEXT NOT NULL DEFAULT 'PendingApproval',
                 CreatedAt TEXT NOT NULL);
+
+            CREATE TABLE IF NOT EXISTS ReturnSafety (
+                ReturnId INTEGER PRIMARY KEY, InjectionSuspected INTEGER NOT NULL,
+                GuardHits TEXT NOT NULL, RedactionCount INTEGER NOT NULL,
+                NeedsHumanReview INTEGER NOT NULL, CheckedAt TEXT NOT NULL);
             """;
         cmd.ExecuteNonQuery();
     }

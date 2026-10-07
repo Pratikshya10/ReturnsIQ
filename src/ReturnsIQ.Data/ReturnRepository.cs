@@ -113,4 +113,65 @@ public class ReturnRepository(Database db)
         idCmd.CommandText = "SELECT last_insert_rowid()";
         return Convert.ToInt32(idCmd.ExecuteScalar());
     }
+
+    public List<ReturnRequest> ListForClassification(int limit, bool onlyUnanalyzed)
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+            SELECT r.ReturnId, r.OrderId, r.Sku, r.Reason, r.CreatedAt, r.Status
+            FROM Returns r
+            WHERE $all = 1 OR (NOT EXISTS (SELECT 1 FROM ReturnAnalysis a WHERE a.ReturnId = r.ReturnId)
+                           AND NOT EXISTS (SELECT 1 FROM ReturnSafety s WHERE s.ReturnId = r.ReturnId))
+            ORDER BY r.ReturnId LIMIT $limit
+            """;
+        cmd.Parameters.AddWithValue("$all", onlyUnanalyzed ? 0 : 1);
+        cmd.Parameters.AddWithValue("$limit", Math.Clamp(limit, 1, 1000));
+        var list = new List<ReturnRequest>();
+        using var r = cmd.ExecuteReader();
+        while (r.Read())
+            list.Add(new ReturnRequest(r.GetInt32(0), r.GetInt32(1), r.GetString(2),
+                r.GetString(3), DateTime.Parse(r.GetString(4)), r.GetString(5)));
+        return list;
+    }
+
+    public void SaveAnalysis(ReturnAnalysis a)
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+            INSERT OR REPLACE INTO ReturnAnalysis
+            (ReturnId, Category, Sentiment, RootCause, IsProductDefect, Confidence, Model, AnalyzedAt)
+            VALUES ($id,$cat,$sent,$root,$def,$conf,$model,$at)
+            """;
+        cmd.Parameters.AddWithValue("$id", a.ReturnId);
+        cmd.Parameters.AddWithValue("$cat", a.Category);
+        cmd.Parameters.AddWithValue("$sent", a.Sentiment);
+        cmd.Parameters.AddWithValue("$root", a.RootCause);
+        cmd.Parameters.AddWithValue("$def", a.IsProductDefect ? 1 : 0);
+        cmd.Parameters.AddWithValue("$conf", a.Confidence);
+        cmd.Parameters.AddWithValue("$model", a.Model);
+        cmd.Parameters.AddWithValue("$at", a.AnalyzedAt.ToString("o"));
+        cmd.ExecuteNonQuery();
+    }
+
+    public void SaveSafety(int returnId, bool injectionSuspected, string guardHits, int redactionCount, bool needsHumanReview)
+    {
+        using var conn = db.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+               INSERT OR REPLACE INTO ReturnSafety
+               (ReturnId, InjectionSuspected, GuardHits, RedactionCount, NeedsHumanReview, CheckedAt)
+               VALUES ($id,$inj,$hits,$red,$rev,$at)
+               """;
+        cmd.Parameters.AddWithValue("$id", returnId);
+        cmd.Parameters.AddWithValue("$inj", injectionSuspected ? 1 : 0);
+        cmd.Parameters.AddWithValue("$hits", guardHits);
+        cmd.Parameters.AddWithValue("$red", redactionCount);
+        cmd.Parameters.AddWithValue("$rev", needsHumanReview ? 1 : 0);
+        cmd.Parameters.AddWithValue("$at", DateTime.UtcNow.ToString("o"));
+        cmd.ExecuteNonQuery();
+    }
+
+
 }

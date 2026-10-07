@@ -15,6 +15,9 @@
 
 data/*.db
 
+data/cache/
+data/logs/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
